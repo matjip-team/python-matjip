@@ -1,0 +1,35 @@
+name: FastAPI Docker Build & Push
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    # 1. 소스 체크아웃
+    - name: Checkout source
+      uses: actions/checkout@v4
+    # 2. Docker Hub 로그인
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKERHUB_USER }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 3. Docker 이미지 빌드
+    - name: Build Docker image
+      run: docker build -t xxx0209/fastapi-backend:latest .
+
+    # 4. Docker Hub Push
+    - name: Push Docker image
+      run: docker push xxx0209/fastapi-backend:latest
+
+    # (선택) 5. VM1에서 배포 스크립트 실행
+    # VM1이 외부에서 SSH 접근 가능할 때만 사용
+    # - name: Deploy to VM1
+    #   uses: appleboy/ssh-action@v1.0.3
+    #   with:
+    #     host: ${{ secrets.VM1_HOST }}
+    #     username: ${{ secrets.VM1_USER }}
+    #     key: ${{ secrets.VM1_SSH_KEY }}
+    #     script: |
+    #       cd /opt/deploy
+    #       ./deploy_fastapi.sh
