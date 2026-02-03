@@ -1,25 +1,18 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Dict
+
+class RecommendRequest(BaseModel):
+    question: str
 
 class Place(BaseModel):
     name: str
     address: str
-    lat: str
-    lng: str
-    category: str
-    distance: str
-
-class Analysis(BaseModel):
-    location: Optional[str]
-    food: Optional[str]
-    mood: Optional[str]
-
-class RecommendRequest(BaseModel):
-    question: str
     lat: float
     lng: float
+    category: str
+    score: float
 
 class RecommendResponse(BaseModel):
-    analysis: Analysis
-    recommended_places: List[Place]
+    analysis: Dict
+    recommended_places: List[Dict]
     ai_comment: str
