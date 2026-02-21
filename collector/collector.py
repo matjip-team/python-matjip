@@ -79,28 +79,30 @@ def collect_places(keywords):
             for p in places:
                 external_id = p["id"]
 
-                # 🔥 중복 방지
+                # 중복 방지
                 if external_id in seen_external_ids:
                     continue
 
                 category = map_category(p.get("category_name", ""))
 
-                # 🔥 카테고리 제한
+                # 카테고리 제한
                 if category_count.get(category, 0) >= CATEGORY_LIMIT.get(category, 0):
                     continue
 
                 name = p["place_name"]
                 address = p.get("road_address_name") or p.get("address_name")
 
-                # 🔥 이미지 요청 (429 방지 위해 순차 처리)
+                # 이미지 요청 (429 방지 위해 순차 처리)
                 try:
                     image_url = search_image(name, address)
                 except Exception as e:
                     print("[IMAGE FAIL]", e)
                     image_url = None
 
-                # 🔥 설명 자동 생성
+                # 설명 자동 생성
                 description = generate_description(category, address)
+
+                phone = p.get("phone") or None
 
                 results.append({
                     "external_id": external_id,
@@ -111,6 +113,7 @@ def collect_places(keywords):
                     "category": category,
                     "image_url": image_url,
                     "description": description,
+                    "phone": phone,
                     "source": "KAKAO"
                 })
 
