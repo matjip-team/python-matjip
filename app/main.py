@@ -13,7 +13,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # React 개발 서버
+        "http://localhost:5174",  # React 개발 서버
         "http://localhost:8081",  # Java 개발 서버
     ],
     allow_credentials=True,
