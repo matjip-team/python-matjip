@@ -21,12 +21,13 @@ RUN poetry --version
 # 5. 작업 디렉토리 생성
 WORKDIR /app
 
-# 6. 의존성 파일 복사
-COPY pyproject.toml poetry.lock* /app/
+# 6. 의존성 파일 및 README 복사 (README.md 추가!)
+# pyproject.toml에 readme가 정의되어 있다면 반드시 복사해야 합니다.
+COPY pyproject.toml poetry.lock* README.md* /app/
 
-# 7. 가상환경 없이 설치, dev dependencies 제외 (Poetry 2.x 문법 적용)
-RUN poetry config virtualenvs.create false
-RUN poetry install --only main --no-interaction --no-ansi
+# 7. 가상환경 없이 설치, --no-root 추가 (중요!)
+RUN poetry config virtualenvs.create false \
+    && poetry install --only main --no-interaction --no-ansi --no-root
 
 # 8. 앱 소스 복사
 COPY . /app
