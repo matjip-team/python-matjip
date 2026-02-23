@@ -1,39 +1,41 @@
-# 1. 베이스 이미지
-FROM python:3.12-slim
+# --- 1단계: 빌더 (Builder) ---
+FROM python:3.12-slim AS builder
 
-# 2. 환경 변수
-ENV PYTHONUNBUFFERED=1 \
+# 환경 변수 설정
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
     PATH="/root/.local/bin:$PATH"
 
-# 3. 필수 OS 패키지 (빌드용)
+# 빌드에만 필요한 패키지 설치
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
-        git \
+    build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. Poetry 2.3.1 설치 (공식 스크립트 사용)
+# Poetry 설치
 RUN curl -sSL https://install.python-poetry.org | python3 - --version 2.3.1
 
-# 설치 확인 (빌드 로그용)
-RUN poetry --version
-
-# 5. 작업 디렉토리 생성
 WORKDIR /app
-
-# 6. 의존성 파일 및 README 복사 (README.md 추가!)
-# pyproject.toml에 readme가 정의되어 있다면 반드시 복사해야 합니다.
 COPY pyproject.toml poetry.lock* README.md* /app/
 
-# 7. 가상환경 없이 설치, --no-root 추가 (중요!)
-RUN poetry config virtualenvs.create false \
-    && poetry install --only main --no-interaction --no-ansi --no-root
+# 의존성 설치 (가상환경 없이 시스템에 직접 설치)
+RUN poetry install --only main --no-interaction --no-ansi --no-root
 
-# 8. 앱 소스 복사
+# --- 2단계: 실행기 (Runner) ---
+FROM python:3.12-slim AS runner
+
+# 필수 환경 변수만 유지
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# 빌더 단계에서 설치된 라이브러리들만 쏙 빼오기 (핵심!)
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# 소스 코드 복사
 COPY . /app
 
-# 9. FastAPI 포트 노출
 EXPOSE 8000
 
-# 10. FastAPI 실행
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
