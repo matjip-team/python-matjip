@@ -3,12 +3,12 @@ FROM python:3.12-slim
 # 2. 작업 디렉토리 생성
 WORKDIR /app
 # 3. Poetry 설치
-RUN pip install --no-cache-dir poetry
+RUN pip install --no-cache-dir poetry==2.3.1
 # 4. 의존성 파일 복사
 COPY pyproject.toml poetry.lock* /app/
 # 5. 의존성 설치 (가상환경 없이 설치)
-RUN poetry config virtualenvs.create false \
-    && poetry install --without dev --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev --no-interaction --no-ansi
 # 6. 앱 소스 복사
 COPY . /app
 EXPOSE 8000
