@@ -26,7 +26,7 @@ COPY pyproject.toml poetry.lock* /app/
 
 # 7. 가상환경 없이 설치, dev dependencies 제외 (Poetry 2.x 문법 적용)
 RUN poetry config virtualenvs.create false
-RUN poetry install --without dev --no-interaction --no-ansi
+RUN poetry install --only main --no-interaction --no-ansi
 
 # 8. 앱 소스 복사
 COPY . /app
