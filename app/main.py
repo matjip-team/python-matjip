@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api import user
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.recommend import router as recommend_router
+from app.config import CORS_ALLOWED_ORIGINS
 
 app = FastAPI(
     title="AI Restaurant Recommendation API",
@@ -9,13 +10,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# 🔥 CORS 허용 설정 (React 연결용)
+# 🔥 CORS 허용 설정 (React/Java 연결용)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # React 개발 서버
-        "http://localhost:8081",  # Java 개발 서버
-    ],
+    allow_origins=CORS_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

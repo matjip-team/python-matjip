@@ -38,3 +38,33 @@ def generate_rule_based_comment(question: str, places: list):
         return f"{names}가 요청하신 메뉴에 잘 맞는 맛집이에요 🍽️"
 
     return f"{names}는 평점과 리뷰가 좋아 추천드려요 👍"
+
+
+def generate_place_description(name: str, address: str, category: str) -> str:
+    """가게 이름·주소·카테고리로 1~2문장 소개 문구 생성 (AI 또는 템플릿)."""
+    if not name:
+        return "AI가 추천한 맛집이에요. 카카오맵에서 메뉴·리뷰를 확인해 보세요."
+
+    if AI_API_KEY:
+        try:
+            completion = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "당신은 맛집 소개를 여러 문장으로 소개하는 역활입니다. 한국어로만 답하고, 이모지 사용하지 마세요.",
+                    },
+                    {
+                        "role": "user",
+                        "content": f"다음 맛집을 여러 문장으로 소개해 주세요. 이름: {name}, 주소: {address}, 카테고리: {category}",
+                    },
+                ],
+                max_tokens=150,
+            )
+            text = (completion.choices[0].message.content or "").strip()
+            if text:
+                return text
+        except Exception:
+            pass
+
+    return f"{name}은(는) {category} 맛집이에요.\r\n{address}에 위치해 있어요.\r\n카카오맵에서 메뉴와 리뷰를 확인해 보세요."
