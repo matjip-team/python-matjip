@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir poetry
 COPY pyproject.toml poetry.lock* /app/
 # 5. 의존성 설치 (가상환경 없이 설치)
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-interaction --no-ansi
+    && poetry install --without dev --no-interaction --no-ansi
 # 6. 앱 소스 복사
 COPY . /app
 EXPOSE 8000
