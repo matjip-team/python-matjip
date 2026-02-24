@@ -1,7 +1,4 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # True: 운영 환경, False: 개발 환경 (기본)
 PRODUCTION = os.getenv("PRODUCTION", "true").lower() in ("true", "1", "yes")
