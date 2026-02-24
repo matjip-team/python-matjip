@@ -20,11 +20,11 @@ app.add_middleware(
 )
 
 # 기본 테스트
-@app.get("/")
+@app.get("/api/fastapi")
 async def root():
     return {"message": "AI Recommendation Server Running"}
 
-@app.get("/health")
+@app.get("/api/fastapi/health")
 def health():
     return {"status": "UP"}
 
