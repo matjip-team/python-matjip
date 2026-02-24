@@ -4,7 +4,7 @@ from collector.collector import collect_places
 
 app = FastAPI(title="Matjip Collector API")
 
-@app.post("/collect")
+@app.post("/api/fastapi/collect")
 def collect():
     keywords = [
         # 한식
