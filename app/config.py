@@ -1,10 +1,7 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # True: 운영 환경, False: 개발 환경 (기본)
-PRODUCTION = os.getenv("PRODUCTION", "true").lower() in ("true", "1", "yes")
+PRODUCTION = os.getenv("PRODUCTION", "false").lower() in ("true", "1", "yes")
 
 # Java(Spring) 백엔드 API Base URL: 로컬 = localhost:8081, 운영 = 43.202.121.6
 JAVA_BACKEND_URL = "http://43.202.121.6" if PRODUCTION else "http://localhost:8081"
